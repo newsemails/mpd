@@ -14,11 +14,12 @@ import VideoToolbox
 final class DashPlayerView: UIView {
     let displayLayer = AVSampleBufferDisplayLayer()
     private var timebase: CMTimebase?
-    let player = DashSampleBufferPlayer()
+    let player: DashSampleBufferPlayer
 
     override class var layerClass: AnyClass { AVSampleBufferDisplayLayer.self }
 
-    override init(frame: CGRect) {
+    init(frame: CGRect, player: DashSampleBufferPlayer) {
+        self.player = player
         super.init(frame: frame)
         guard let layer = self.layer as? AVSampleBufferDisplayLayer else { return }
         displayLayer.frame = bounds
@@ -28,13 +29,12 @@ final class DashPlayerView: UIView {
         backgroundColor = .black
     }
 
+    convenience init(player: DashSampleBufferPlayer) {
+        self.init(frame: .zero, player: player)
+    }
+
     required init?(coder: NSCoder) {
-        super.init(coder: coder)
-        guard let layer = self.layer as? AVSampleBufferDisplayLayer else { return }
-        layer.videoGravity = .resizeAspect
-        layer.controlTimebase = makeTimebase()
-        player.attach(displayLayer: layer)
-        backgroundColor = .black
+        fatalError("init(coder:) has not been implemented")
     }
 
     private func makeTimebase() -> CMTimebase {
